@@ -29,11 +29,11 @@ public class YinEstimator {
         differenceFun(buffer);
         cumulativeMeanNormalizedDifference();
 
-        tauEstimate = absoluteTrashold(0.125f);
+        tauEstimate = absoluteThreshold(0.3f);
 
-        //float betterTau = parabolicInterpolation(tauEstimate);
+        float betterTau = parabolicInterpolation(tauEstimate);
 
-        return sampleRate / tauEstimate;
+        return sampleRate / betterTau;
     }
 
 
@@ -55,7 +55,7 @@ public class YinEstimator {
     }
 
     //step 4 -  Absolute threshold
-    public int absoluteTrashold(float threshold) {
+    public int absoluteThreshold(float threshold) {
         int tau = 0;
         for (tau = 2; tau < yinBuffer.length; tau++) {
             if (yinBuffer[tau] < threshold) {
@@ -93,7 +93,7 @@ public class YinEstimator {
                 betterTau = x2;
             }
         } else if (x2 == tauEstimate) {
-            if (yinBuffer[tauEstimate] <= yinBuffer[x0]) {
+            if (yinBuffer[tauEstimate-1] <= yinBuffer[x0]) {
                 betterTau = tauEstimate;
             } else {
                 betterTau = x0;

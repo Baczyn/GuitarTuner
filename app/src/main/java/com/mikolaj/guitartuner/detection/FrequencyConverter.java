@@ -18,13 +18,13 @@ public class FrequencyConverter {
             "C9", "C#9", "D9", "D#9", "E9", "F9", "F#9", "G9", "G#9", "A9", "A#9", "B9"};
 
 
-    public int getNote(float fEstimate) {
+    public Note getNote(float fEstimate) {
         Note note = new Note(A4);
         setNoteSteps(fEstimate, note);
         setCentSteps(fEstimate, note);
         note.setNote(notes[A4_idx + note.getNoteSteps()]);
 
-        return note.getCent();
+        return note;
     }
 
     private void setNoteSteps(float fEstimate, Note note) {

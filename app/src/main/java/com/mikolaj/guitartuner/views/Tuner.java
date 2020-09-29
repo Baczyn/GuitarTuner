@@ -13,11 +13,13 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.mikolaj.guitartuner.R;
 
@@ -46,6 +48,11 @@ public final class Tuner extends View {
     private Paint handPaint;
     private Path handPath;
     private Paint handScrewPaint;
+
+    //Note params
+    private Paint notePaint;
+    private String noteName = "A4";
+    private String noteFrequency = "440Hz";
 
     // hand dynamics -- all are angular expressed in F degrees
     private boolean handInitialized = true;
@@ -91,7 +98,7 @@ public final class Tuner extends View {
     private void initialize() {
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         //initialize Circuit params
-        circuitRect = new RectF(0f, 0f, 1f, 0.8f);
+        circuitRect = new RectF(0f, 0f, 1f, 1f);
 
         // the linear gradient is a bit skewed for realism
         circuitPaint = new Paint();
@@ -139,8 +146,8 @@ public final class Tuner extends View {
         handPaint.setStyle(Paint.Style.FILL);
 
 
-        tunerY = surfaceRect.bottom - 0.25f;
-        tunerX = 0.5f;
+        tunerY = getScaleY() - 0.35f;
+        tunerX = getScaleX()/2f;
 
         handPath = new Path();
         handPath.moveTo(tunerX, tunerY + 0.2f);
@@ -156,6 +163,12 @@ public final class Tuner extends View {
         handScrewPaint.setAntiAlias(true);
         handScrewPaint.setColor(0xff493f3c);
         handScrewPaint.setStyle(Paint.Style.FILL);
+
+        notePaint = new Paint();
+        notePaint.setAntiAlias(true);
+        notePaint.setColor(0xff493f3c);
+        notePaint.setStyle(Paint.Style.FILL);
+        notePaint.setTextAlign(Paint.Align.RIGHT);
 
         backgroundPaint = new Paint();
         backgroundPaint.setFilterBitmap(true);
@@ -182,7 +195,7 @@ public final class Tuner extends View {
         canvas.save();
         canvas.scale(1f / magnifier, 1f / magnifier);
         scalePaint.setTextSize(magnifier * 0.04f);
-        scalePaint.setStrokeWidth(0.005f * magnifier);
+        scalePaint.setStrokeWidth(0.008f * magnifier);
 
         float radius = 0.4f * magnifier;
         int counter = 0;
@@ -255,7 +268,7 @@ public final class Tuner extends View {
         canvas.scale(scale, scale);
 
         drawHand(canvas);
-
+        drawNote(canvas);
         canvas.restore();
 
         invalidate();
@@ -276,11 +289,15 @@ public final class Tuner extends View {
 
         background = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas backgroundCanvas = new Canvas(background);
-        float scale = (float) getWidth();
-        backgroundCanvas.scale(scale, scale);
+        float scaleX = (float) getWidth();
+        float scaleY = (float) getHeight();
+        backgroundCanvas.save();
+        backgroundCanvas.scale(scaleX, scaleY);
 
         drawRim(backgroundCanvas);
         drawFace(backgroundCanvas);
+        backgroundCanvas.restore();
+        backgroundCanvas.scale(scaleX, scaleX);
         drawScale(backgroundCanvas);
     }
 
@@ -292,4 +309,34 @@ public final class Tuner extends View {
     {
         return degreesPerCent*cent;
     }
+
+    private void drawNote(final Canvas canvas){
+        canvas.save();
+        final float magnifier = 100f; //lupa
+        canvas.scale(1f/magnifier,1f/magnifier);
+
+        notePaint.setTextSize(10f);
+       // canvas.drawText(noteName.fo, tunerX*magnifier,tunerY*magnifier/3.5f,notePaint);
+        for(int i = 0 ; i<noteName.length() ;i++){
+            if(i<(noteName.length()-1))
+                canvas.drawText(""+noteName.charAt(i), tunerX*magnifier+i*5f,tunerY*magnifier/3.5f,notePaint);
+            else{
+                notePaint.setTextSize(5f);
+                canvas.drawText(""+noteName.charAt(i), tunerX*magnifier+i*5f,tunerY*magnifier/3.5f+1f,notePaint);
+            }
+        }
+
+        //DrawFrequency
+        canvas.drawText(noteFrequency,1.9f*tunerX*magnifier,tunerY*magnifier/6f,notePaint);
+
+        canvas.restore();
+    }
+
+    public void updateNote(String noteName){
+        this.noteName = noteName;
+    }
+    public void updateFrequency(String noteFrequency){
+        this.noteFrequency = noteFrequency;
+    }
+
 }

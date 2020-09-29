@@ -1,14 +1,14 @@
 package com.mikolaj.guitartuner;
 
 
-import androidx.appcompat.app.AppCompatActivity;
+        import androidx.appcompat.app.AppCompatActivity;
 
 
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
+        import android.os.Bundle;
+        import android.view.View;
+        import android.widget.Button;
 
-import com.mikolaj.guitartuner.views.Tuner;
+        import com.mikolaj.guitartuner.views.Tuner;
 
 public class MainActivity extends AppCompatActivity {
     private Tuner tuner;
