@@ -1,5 +1,6 @@
 package com.mikolaj.guitartuner.views;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,13 +14,11 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import com.mikolaj.guitartuner.R;
 
@@ -157,6 +156,7 @@ public final class Tuner extends View {
         handPath.lineTo(tunerX + 0.010f, tunerY + 0.2f - 0.007f);
         handPath.lineTo(tunerX, tunerY + 0.2f);
         handPath.addCircle(tunerX, tunerY, 0.025f, Path.Direction.CW);
+
 
 
         handScrewPaint = new Paint();
@@ -301,13 +301,20 @@ public final class Tuner extends View {
         drawScale(backgroundCanvas);
     }
 
-    public void updateHand(int cent){
+    public void updateHand(int cent)
+    {
         degree = centToDegree(cent);
+
     }
 
     private float centToDegree(int cent)
     {
         return degreesPerCent*cent;
+    }
+
+    private float degreeToCent(float degree)
+    {
+        return degree/degreesPerCent;
     }
 
     private void drawNote(final Canvas canvas){
@@ -336,7 +343,15 @@ public final class Tuner extends View {
         this.noteName = noteName;
     }
     public void updateFrequency(String noteFrequency){
+
         this.noteFrequency = noteFrequency;
+    }
+
+    public void updateView(String frequency,int cent,String noteName){
+        updateFrequency(frequency);
+        updateHand(cent);
+        updateHand(cent);
+        updateNote(noteName);
     }
 
 }

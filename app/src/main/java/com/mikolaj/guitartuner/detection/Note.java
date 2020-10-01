@@ -1,5 +1,11 @@
 package com.mikolaj.guitartuner.detection;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
+import java.util.Objects;
+
 public class Note {
 
     private float frequency;
@@ -11,8 +17,8 @@ public class Note {
         this.frequency = frequency;
         this.cent = 0;
         this.noteSteps = 0;
-
     }
+
 
     public float getFrequency() {
         return frequency;
@@ -50,5 +56,22 @@ public class Note {
     public String toString() {
         return "note=" + note + " "+cent+" cents";
 
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Note)) return false;
+        Note note1 = (Note) o;
+        return Float.compare(note1.frequency, frequency) == 0 &&
+                cent == note1.cent &&
+                noteSteps == note1.noteSteps &&
+                note.equals(note1.note);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    public int hashCode() {
+        return Objects.hash(frequency, cent, noteSteps, note);
     }
 }

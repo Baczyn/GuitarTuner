@@ -7,7 +7,7 @@ public class YinEstimator {
     private float[] yinBuffer;
 
     public YinEstimator(int readSize) {
-        this.yinBuffer = new float[readSize];
+        this.yinBuffer = new float[readSize/2];
     }
 
     /**
@@ -29,7 +29,7 @@ public class YinEstimator {
         differenceFun(buffer);
         cumulativeMeanNormalizedDifference();
 
-        tauEstimate = absoluteThreshold(0.3f);
+        tauEstimate = absoluteThreshold(0.125f);
 
         float betterTau = parabolicInterpolation(tauEstimate);
 
@@ -39,8 +39,8 @@ public class YinEstimator {
 
     //step 2 - Difference function
     public void differenceFun(float[] buffer) {
-        for (int tau = 1; tau < buffer.length; tau++)
-            for (int i = 0; i < buffer.length - tau; i++)
+        for (int tau = 1; tau < yinBuffer.length; tau++)
+            for (int i = 0; i < yinBuffer.length; i++)
                 yinBuffer[tau] += Math.pow(buffer[i] - buffer[i + tau], 2);
     }
 
@@ -55,18 +55,18 @@ public class YinEstimator {
     }
 
     //step 4 -  Absolute threshold
-    public int absoluteThreshold(float threshold) {
-        int tau = 0;
+    private int absoluteThreshold(float threshold) {
+        int tau;
         for (tau = 2; tau < yinBuffer.length; tau++) {
             if (yinBuffer[tau] < threshold) {
-                while (yinBuffer[tau + 1] < yinBuffer[tau]) {
-                    if (tau < yinBuffer.length - 2) tau++;
-                    else
-                        return tau;
+                while (tau + 1 < yinBuffer.length && yinBuffer[tau + 1] < yinBuffer[tau]) {
+                    tau++;
                 }
-                return tau;
+                break;
             }
         }
+        tau = tau >= yinBuffer.length ? yinBuffer.length - 1 : tau;
+
         return tau;
     }
 

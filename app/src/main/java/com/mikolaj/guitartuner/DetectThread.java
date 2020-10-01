@@ -17,7 +17,6 @@ public class DetectThread extends Thread {
 
     private Handler handler;
     private float pitch;
-    private int cent;
     private Tuner tuner;
     private Recorder recorder;
     private boolean shouldBeStop = false;
@@ -38,70 +37,26 @@ public class DetectThread extends Thread {
         recorder.stopRecording();
     }
 
-    int k;
-    int i;
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void run() {
         recorder = new Recorder();
         YinEstimator yinEstimator = new YinEstimator(recorder.readSize);
         recorder.startRecording();
-        i = k = 0;
+
         while (!shouldBeStop) {
-            Note note;
             pitch = yinEstimator.detect(recorder.readNextBuffer(), recorder.getAudioConfiguration().getSampleRate());
-            note = frequencyConverter.getNote(pitch);
+            final Note note = frequencyConverter.getNote(pitch);
 
-            int newCent = note.getCent();
-            final String noteName = note.getNote();
-            final String noteFrequency = note.getFrequency()+"Hz";
-
-
-            if (newCent > (cent )) {
-                for (i = cent; i < newCent; i++) {
-                    try {
-                        sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            tuner.updateHand(i);
-                            tuner.updateNote(noteName);
-                            tuner.updateFrequency(noteFrequency);
-                        }
-                    });
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    tuner.updateView(note.getFrequency() + "Hz", note.getCent(), note.getNote());
                 }
+            });
 
-            } else if (newCent < (cent )) {
-                for (k = cent; k > newCent; k--) {
-                    try {
-                        sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            tuner.updateHand(k);
-                            tuner.updateNote(noteName);
-                            tuner.updateFrequency(noteFrequency);
-                        }
-                    });
-                }
-            }
-            try {
-                sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            cent = newCent;
         }
-
-
     }
+
 
 }
