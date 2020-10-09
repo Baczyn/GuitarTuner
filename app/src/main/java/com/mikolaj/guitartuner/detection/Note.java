@@ -13,8 +13,8 @@ public class Note {
     private int noteSteps; //odległość od A4
     private String note;
 
-    public Note(float frequency) {
-        this.frequency = frequency;
+    public Note() {
+        this.frequency = 440.0f;
         this.cent = 0;
         this.noteSteps = 0;
     }

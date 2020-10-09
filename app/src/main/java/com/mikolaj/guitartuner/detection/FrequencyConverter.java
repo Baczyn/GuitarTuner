@@ -19,7 +19,7 @@ public class FrequencyConverter {
 
 
     public Note getNote(float fEstimate) {
-        Note note = new Note(A4);
+        Note note = new Note();
         setNoteSteps(fEstimate, note);
         setCentSteps(fEstimate, note);
         note.setNote(notes[A4_idx + note.getNoteSteps()]);
@@ -73,8 +73,8 @@ public class FrequencyConverter {
                 stepCentCounter = 100 - stepCentCounter;
             }
         }
-
-        note.setCent(stepCentCounter);
+        note.setFrequency(fEstimate);
+        note.setCent(-stepCentCounter);
     }
 
 

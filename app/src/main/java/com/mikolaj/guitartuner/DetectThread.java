@@ -45,7 +45,9 @@ public class DetectThread extends Thread {
         recorder.startRecording();
 
         while (!shouldBeStop) {
+
             pitch = yinEstimator.detect(recorder.readNextBuffer(), recorder.getAudioConfiguration().getSampleRate());
+//            pitch =    123f;
             final Note note = frequencyConverter.getNote(pitch);
 
             handler.post(new Runnable() {

@@ -29,7 +29,7 @@ public class YinEstimator {
         differenceFun(buffer);
         cumulativeMeanNormalizedDifference();
 
-        tauEstimate = absoluteThreshold(0.125f);
+        tauEstimate = absoluteThreshold(0.4f);
 
         float betterTau = parabolicInterpolation(tauEstimate);
 

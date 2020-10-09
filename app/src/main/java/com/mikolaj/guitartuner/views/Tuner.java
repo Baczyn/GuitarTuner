@@ -350,7 +350,6 @@ public final class Tuner extends View {
     public void updateView(String frequency,int cent,String noteName){
         updateFrequency(frequency);
         updateHand(cent);
-        updateHand(cent);
         updateNote(noteName);
     }
 
