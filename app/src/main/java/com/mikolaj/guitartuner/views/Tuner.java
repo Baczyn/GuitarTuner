@@ -1,6 +1,5 @@
 package com.mikolaj.guitartuner.views;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -55,19 +54,12 @@ public final class Tuner extends View {
 
     // hand dynamics -- all are angular expressed in F degrees
     private boolean handInitialized = true;
-    private float handPosition = 0;
-    private float handTarget = 0;
-    private float handVelocity = 0.0f;
-    private float handAcceleration = 0.0f;
-    private long lastHandMoveTime = -1L;
 
     private float degree = 0;
-
 
     private static final int totalCent = 100;
     private static final float degreesPerCent = 180.0f / totalCent;
     // private
-
 
     private Paint backgroundPaint;
     // end drawing tools
@@ -332,7 +324,6 @@ public final class Tuner extends View {
                 canvas.drawText(""+noteName.charAt(i), tunerX*magnifier+i*5f,tunerY*magnifier/3.5f+1f,notePaint);
             }
         }
-
         //DrawFrequency
         canvas.drawText(noteFrequency,1.9f*tunerX*magnifier,tunerY*magnifier/6f,notePaint);
 
@@ -350,7 +341,15 @@ public final class Tuner extends View {
     public void updateView(String frequency,int cent,String noteName){
         updateFrequency(frequency);
         updateHand(cent);
+        updateNoteColor(cent);
         updateNote(noteName);
+    }
+
+    private void updateNoteColor(int cent){
+        if(cent >= -5 && cent <= 5)
+            notePaint.setColor(0x9f004d0f);
+        else
+            notePaint.setColor(Color.BLACK);
     }
 
 }
