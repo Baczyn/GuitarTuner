@@ -1,5 +1,7 @@
 package com.mikolaj.guitartuner.detection;
 
+import android.util.Log;
+
 public class FrequencyConverter {
     private final static float NOTE_STEP = 1.059463094f;  //sqrt(2,12) // o taka wartosc oddalone są dźwięki
     private final static float CENT_STEP = 1.000577789f;  //sqrt(2,1200) // o taka wartosc oddalone są centy - ogległość między A a A# to 50 centów
@@ -59,8 +61,11 @@ public class FrequencyConverter {
             if (stepCentCounter > 50) {
                 int stepNoteCounter = note.getNoteSteps() + 1;
                 note.setNoteSteps(stepNoteCounter);
-                stepCentCounter -= 100 - 1;
+                stepCentCounter = 100 - stepCentCounter;
+                note.setCent(-stepCentCounter);
             }
+            else
+                note.setCent(stepCentCounter);
         } else {
 
             while (fEstimate < fNote / CENT_STEP) {
@@ -71,10 +76,13 @@ public class FrequencyConverter {
                 int stepNoteCounter = note.getNoteSteps() - 1;
                 note.setNoteSteps(stepNoteCounter);
                 stepCentCounter = 100 - stepCentCounter;
+                note.setCent(stepCentCounter);
             }
+            else
+                note.setCent(-stepCentCounter);
         }
         note.setFrequency(fEstimate);
-        note.setCent(-stepCentCounter);
+       // note.setCent(-stepCentCounter);
     }
 
 
